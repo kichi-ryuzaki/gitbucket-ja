@@ -25,10 +25,10 @@ index ae155e9..870af84 100644
        }
      }
 diff --git a/src/main/scala/gitbucket/core/controller/RepositoryViewerController.scala b/src/main/scala/gitbucket/core/controller/RepositoryViewerController.scala
-index 311dbac..f929522 100644
+index 5565793..e11f93f 100644
 --- a/src/main/scala/gitbucket/core/controller/RepositoryViewerController.scala
 +++ b/src/main/scala/gitbucket/core/controller/RepositoryViewerController.scala
-@@ -234,7 +234,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
+@@ -252,7 +252,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
        branch     = form.branch,
        path       = form.path,
        files      = files,
@@ -185,10 +185,10 @@ index f75a15c..8e5cc90 100644
        currentDate)
  
 diff --git a/src/main/scala/gitbucket/core/service/RepositoryCreationService.scala b/src/main/scala/gitbucket/core/service/RepositoryCreationService.scala
-index 2aa4196..3939f15 100644
+index 7b9bffd..b70265a 100644
 --- a/src/main/scala/gitbucket/core/service/RepositoryCreationService.scala
 +++ b/src/main/scala/gitbucket/core/service/RepositoryCreationService.scala
-@@ -69,21 +69,21 @@ trait RepositoryCreationService {
+@@ -204,21 +204,21 @@ trait RepositoryCreationService {
    }
  
    def insertDefaultLabels(userName: String, repositoryName: String)(implicit s: Session): Unit = {
@@ -577,7 +577,7 @@ index 16e0341..83fb9fc 100644
          </li>
          @gitbucket.core.plugin.PluginRegistry().getAccountSettingMenus.map { menu =>
 diff --git a/src/main/twirl/gitbucket/core/account/newrepo.scala.html b/src/main/twirl/gitbucket/core/account/newrepo.scala.html
-index 6f6397b..a043e99 100644
+index 32ae645..4e4fe78 100644
 --- a/src/main/twirl/gitbucket/core/account/newrepo.scala.html
 +++ b/src/main/twirl/gitbucket/core/account/newrepo.scala.html
 @@ -4,14 +4,14 @@ isCreateRepoOptionPublic: Boolean)(implicit context: gitbucket.core.controller.C
@@ -607,52 +607,6 @@ index 6f6397b..a043e99 100644
            <dd style="margin-left: 0px;">
              <input type="text" name="name" id="name" class="form-control" style="width: 200px;" autofocus />
              <span id="error-name" class="error"></span>
-@@ -38,36 +38,37 @@ isCreateRepoOptionPublic: Boolean)(implicit context: gitbucket.core.controller.C
-         </dl>
-       </fieldset>
-       <fieldset class="form-group">
--        <label for="description" class="strong">Description (optional):</label>
-+        <label for="description" class="strong">説明 (任意):</label>
-         <input type="text" name="description" id="description" class="form-control" style="width: 95%;"/>
-       </fieldset>
-       <fieldset class="border-top">
-         <label class="radio">
-           <input type="radio" name="isPrivate" value="false" @if(isCreateRepoOptionPublic){checked}>
--          <span class="strong"><i class="octicon octicon-repo"></i>&nbsp;</i>&nbsp;Public</span>
-+          <span class="strong"><i class="octicon octicon-repo"></i>&nbsp;</i>&nbsp;公開</span>
-           <div class="normal muted">
--            Anyone can see this repository. You choose who can commit.
-+			誰でも閲覧が出来るリポジトリです。コミット出来る人を選ぶことが出来ます。
-           </div>
-         </label>
-         <label class="radio">
-           <input type="radio" name="isPrivate" value="true" @if(!isCreateRepoOptionPublic){checked}>
--          <span class="strong"><i class="octicon octicon-lock"></i>&nbsp;</i>&nbsp;Private</span>
-+          <span class="strong"><i class="octicon octicon-lock"></i>&nbsp;</i>&nbsp;非公開</span>
-           <div class="normal muted">
--            You choose who can see and commit to this repository.
-+			このリポジトリは、閲覧とコミットが出来る人を選ぶことが出来ます。
-           </div>
-         </label>
-       </fieldset>
-       <fieldset class="border-top">
-         <label for="createReadme" class="checkbox">
-           <input type="checkbox" name="createReadme" id="createReadme"/>
--          <span class="strong">Initialize this repository with a README</span>
-+          <span class="strong">READMEありでリポジトリを初期化</span>
-           <div class="normal muted">
--            This will let you immediately clone the repository to your computer. Skip this step if you’re importing an existing repository.
-+			リモートに即座にcloneすることが出来るようになります。他の
-+            リポジトリをimportする時はスキップしましょう。
-           </div>
-         </label>
-       </fieldset>
-       <fieldset class="border-top form-actions">
--        <input type="submit" class="btn btn-success" value="Create repository"/>
-+        <input type="submit" class="btn btn-success" value="リポジトリ作成"/>
-       </fieldset>
-     </form>
-   </div>
 diff --git a/src/main/twirl/gitbucket/core/account/register.scala.html b/src/main/twirl/gitbucket/core/account/register.scala.html
 index 169102e..8225279 100644
 --- a/src/main/twirl/gitbucket/core/account/register.scala.html
@@ -859,6 +813,307 @@ index 9f37b45..eaa7e0e 100644
      }
    }
  }
+diff --git a/src/main/twirl/gitbucket/core/admin/system.scala.html b/src/main/twirl/gitbucket/core/admin/system.scala.html
+index b9017b7..0dd4f5e 100644
+--- a/src/main/twirl/gitbucket/core/admin/system.scala.html
++++ b/src/main/twirl/gitbucket/core/admin/system.scala.html
+@@ -6,15 +6,15 @@
+     @gitbucket.core.helper.html.information(info)
+     <form action="@context.path/admin/system" method="POST" validate="true" class="form-horizontal">
+       <div class="panel panel-default">
+-        <div class="panel-heading strong">System settings</div>
++        <div class="panel-heading strong">システム設定</div>
+         <div class="panel-body">
+             <!--====================================================================-->
+             <!-- System properties -->
+             <!--====================================================================-->
+           <table class="table table-bordered">
+             <tr>
+-              <th>Property</th>
+-              <th>Value</th>
++              <th>プロパティ</th>
++              <th>値</th>
+             </tr>
+             <tr>
+               <td>GITBUCKET_HOME</td>
+@@ -26,8 +26,8 @@
+               <td class="danger">
+                 <p>@gitbucket.core.util.DatabaseConfig.url</p>
+                 <p>
+-                  Your GitBucket is running on embedded H2 database.
+-                  Recommend to <a href="https://github.com/gitbucket/gitbucket/wiki/External-database-configuration">configure to use external database</a> if you would like to use GitBucket for important purpose.
++				  現在H2データベースを使ってGitBucketは動いています。
++                  GitBucketを安定した環境で動かす時は <a href="https://github.com/gitbucket/gitbucket/wiki/External-database-configuration">外部データベースを使う</a> を参照して下さい。
+                 </p>
+               </td>
+               }else{
+@@ -47,9 +47,9 @@
+               </div>
+           </fieldset>
+           <p class="muted">
+-            The base URL is used for redirect, notification email, git repository URL box and more.
+-            If the base URL is empty, GitBucket generates URL from the request information.
+-            You can use this property to adjust to URL differences between the reverse proxy and GitBucket.
++			Base URLはリバースプロキシなどによるリダイレクトや通知email、gitリポジトリのURLボックスなどで利用されます。
++			Base URLに何も指定しなかった場合、GitBucketはアクセスされたURL自体からそれらURLを推測します。
++			リバースプロキシでGitBucketを中継する時はリバースプロキシ側のURLを指定するといいでしょう。
+           </p>
+           <!--====================================================================-->
+           <!-- Information -->
+@@ -101,52 +101,52 @@
+           <!-- Account registration -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Account registration</label>
++          <label class="strong">アカウント登録</label>
+           <fieldset>
+             <label class="radio">
+               <input type="radio" name="allowAccountRegistration" value="true"@if(context.settings.allowAccountRegistration){ checked}>
+-              <span class="strong">Allow</span> <span class="normal">- Users can create accounts by themselves.</span>
++              <span class="strong">許可</span> <span class="normal">ユーザー自身によるアカウントの作成を許可します。</span>
+             </label>
+             <label class="radio">
+               <input type="radio" name="allowAccountRegistration" value="false"@if(!context.settings.allowAccountRegistration){ checked}>
+-              <span class="strong">Deny</span> <span class="normal">- Only administrators can create accounts.</span>
++              <span class="strong">不許可</span> <span class="normal">管理だけがアカウントの作成が出来ます。</span>
+             </label>
+           </fieldset>
+           <hr>
+-          <label class="strong">Default permissions when creating a new repository</label>
++          <label class="strong">リポジトリ作成時のデフォルト設定</label>
+           <fieldset>
+             <label class="radio">
+               <input type="radio" name="isCreateRepoOptionPublic" value="true"@if(context.settings.isCreateRepoOptionPublic){ checked}>
+-              <span class="strong">Public</span> <span class="normal">- All users and guests can read the repository.</span>
++              <span class="strong">公開</span> <span class="normal">全ユーザーとゲストがリポジトリを見ることが出来ます。</span>
+             </label>
+             <label class="radio">
+               <input type="radio" name="isCreateRepoOptionPublic" value="false"@if(!context.settings.isCreateRepoOptionPublic){ checked}>
+-              <span class="strong">Private</span> <span class="normal">- Only collaborators can read the repository.</span>
++              <span class="strong">非公開</span> <span class="normal">編集権限を持つユーザーだけがリポジトリを見ることが出来ます。</span>
+             </label>
+           </fieldset>
+           <!--====================================================================-->
+           <!-- Anonymous access -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Anonymous access</label>
++          <label class="strong">サインイン前のアクセス</label>
+           <fieldset>
+             <label class="radio">
+               <input type="radio" name="allowAnonymousAccess" value="true"@if(context.settings.allowAnonymousAccess){ checked}>
+-              <span class="strong">Allow</span> <span class="normal">- Anyone can view public repositories and user/group profiles.</span>
++              <span class="strong">許可</span> <span class="normal">誰でも公開されているリポジトリやユーザーとグループのプロパティを見ることが出来ます</span>
+             </label>
+             <label class="radio">
+               <input type="radio" name="allowAnonymousAccess" value="false"@if(!context.settings.allowAnonymousAccess){ checked}>
+-              <span class="strong">Deny</span> <span class="normal">- Users must authenticate before viewing any information.</span>
++              <span class="strong">不許可</span> <span class="normal">サインインをするまでは何も見ることは出来ません</span>
+             </label>
+           </fieldset>
+           <!--====================================================================-->
+           <!-- Activity -->
+           <!--====================================================================-->
+           <hr>
+-          <label><span class="strong">Limit of activity logs</span> (Unlimited if it is not specified or zero)</label>
++          <label><span class="strong">活動ログの最大保持数</span> (空欄か0を指定するといくらでも保持出来るようになります)</label>
+           <fieldset>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="activityLogLimit">Limit</label>
++              <label class="control-label col-md-2" for="activityLogLimit">上限</label>
+               <div class="col-md-10">
+                 <input type="text" id="activityLogLimit" name="activityLogLimit" class="form-control input-mini" value="@context.settings.activityLogLimit"/>
+                 <span id="error-activityLogLimit" class="error"></span>
+@@ -157,35 +157,35 @@
+           <!-- Services -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Services</label>
++          <label class="strong">サービス</label>
+           <fieldset>
+             <label class="checkbox">
+               <input type="checkbox" name="gravatar"@if(context.settings.gravatar){ checked}/>
+-              Use Gravatar for profile images
++			  Gravatarからプロフィール画像を取得します。
+             </label>
+           </fieldset>
+           <!--====================================================================-->
+           <!-- SSH access -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">SSH access</label>
++          <label class="strong">SSHアクセス</label>
+           <fieldset>
+             <label class="checkbox">
+               <input type="checkbox" id="ssh" name="ssh"@if(context.settings.ssh){ checked}/>
+-              Enable SSH access to git repository
+-              <span class="muted normal">(Both SSH host and Base URL are required if SSH access is enabled)</span>
++			  GitリポジトリへSSHアクセスが出来るようにします
++              <span class="muted normal">(もしSSHアクセスを有効にするには、SSHホストとBase URLを指定する必要があります)</span>
+             </label>
+           </fieldset>
+           <div class="ssh">
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="sshHost">SSH host</label>
++              <label class="control-label col-md-2" for="sshHost">SSHホスト</label>
+               <div class="col-md-10">
+                 <input type="text" id="sshHost" name="sshHost" class="form-control" value="@context.settings.sshHost"/>
+                 <span id="error-sshHost" class="error"></span>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="sshPort">SSH port</label>
++              <label class="control-label col-md-2" for="sshPort">SSHポート</label>
+               <div class="col-md-10">
+                 <input type="text" id="sshPort" name="sshPort" class="form-control" value="@context.settings.sshPort"/>
+                 <span id="error-sshPort" class="error"></span>
+@@ -196,7 +196,7 @@
+           <!-- Authentication -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Authentication</label>
++          <label class="strong">認証</label>
+           <fieldset>
+             <label class="checkbox">
+               <input type="checkbox" id="ldapAuthentication" name="ldapAuthentication"@if(context.settings.ldap){ checked} />
+@@ -205,14 +205,14 @@
+           </fieldset>
+           <div class="ldap">
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="ldapHost">LDAP host</label>
++              <label class="control-label col-md-2" for="ldapHost">LDAPホスト</label>
+               <div class="col-md-10">
+                 <input type="text" id="ldapHost" name="ldap.host" class="form-control" value="@context.settings.ldap.map(_.host)"/>
+                 <span id="error-ldap_host" class="error"></span>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="ldapPort">LDAP port</label>
++              <label class="control-label col-md-2" for="ldapPort">LDAPポート</label>
+               <div class="col-md-10">
+                 <input type="text" id="ldapPort" name="ldap.port" class="form-control input-mini" value="@context.settings.ldap.map(_.port)"/>
+                 <span id="error-ldap_port" class="error"></span>
+@@ -268,13 +268,13 @@
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2">Enable TLS</label>
++              <label class="control-label col-md-2">TLSを有効にする</label>
+               <div class="col-md-10">
+                 <input type="checkbox" name="ldap.tls"@if(context.settings.ldap.flatMap(_.tls).getOrElse(false)){ checked}/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2">Enable SSL</label>
++              <label class="control-label col-md-2">SSLを有効にする</label>
+               <div class="col-md-10">
+                 <input type="checkbox" name="ldap.ssl"@if(context.settings.ldap.flatMap(_.ssl).getOrElse(false)){ checked}/>
+               </div>
+@@ -291,78 +291,78 @@
+           <!-- Notification email -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Notifications</label>
++          <label class="strong">通知</label>
+           <fieldset>
+             <label class="checkbox">
+               <input type="checkbox" id="notification" name="notification"@if(context.settings.notification){ checked}/>
+-              Send notifications
++			  通知を有効にする
+             </label>
+           </fieldset>
+           <!--====================================================================-->
+           <!-- Communication email -->
+           <!--====================================================================-->
+           <hr>
+-          <label class="strong">Communication</label>
++          <label class="strong">e-mail設定</label>
+           <fieldset>
+             <label class="checkbox">
+               <input type="checkbox" id="useSMTP" name="useSMTP" @if(context.settings.useSMTP){ checked}/>
+               SMTP
+-              <span class="muted normal">(Enable notification as well as SMTP configuration if you want to send notification email too)</span>
++              <span class="muted normal">(通知を有効にする時はSMTPの設定をする必要があります)</span>
+             </label>
+           </fieldset>
+           <div class="useSMTP">
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpHost">SMTP host</label>
++              <label class="control-label col-md-2" for="smtpHost">SMTPホスト</label>
+               <div class="col-md-10">
+                 <input type="text" id="smtpHost" name="smtp.host" class="form-control" value="@context.settings.smtp.map(_.host)"/>
+                 <span id="error-smtp_host" class="error"></span>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpPort">SMTP port</label>
++              <label class="control-label col-md-2" for="smtpPort">SMTPポート</label>
+               <div class="col-md-10">
+                 <input type="text" id="smtpPort" name="smtp.port" class="form-control input-mini" value="@context.settings.smtp.map(_.port)"/>
+                 <span id="error-smtp_port" class="error"></span>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpUser">SMTP user</label>
++              <label class="control-label col-md-2" for="smtpUser">SMTPユーザー</label>
+               <div class="col-md-10">
+                 <input type="text" id="smtpUser" name="smtp.user" class="form-control" value="@context.settings.smtp.map(_.user)"/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpPassword">SMTP password</label>
++              <label class="control-label col-md-2" for="smtpPassword">SMTPパスワード</label>
+               <div class="col-md-10">
+                 <input type="password" id="smtpPassword" name="smtp.password" class="form-control" value="@context.settings.smtp.map(_.password)"/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpSsl">Enable SSL</label>
++              <label class="control-label col-md-2" for="smtpSsl">SSLを使う</label>
+               <div class="col-md-10">
+                 <input type="checkbox" id="smtpSsl" name="smtp.ssl"@if(context.settings.smtp.flatMap(_.ssl).getOrElse(false)){ checked}/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="smtpStarttls">Enable STARTTLS</label>
++              <label class="control-label col-md-2" for="smtpStarttls">STARTTLSを使う</label>
+               <div class="col-md-10">
+                 <input type="checkbox" id="smtpStarttls" name="smtp.starttls"@if(context.settings.smtp.flatMap(_.starttls).getOrElse(false)){ checked}/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="fromAddress">FROM address</label>
++              <label class="control-label col-md-2" for="fromAddress">FROMに記述するアドレス</label>
+               <div class="col-md-10">
+                 <input type="text" id="fromAddress" name="smtp.fromAddress" class="form-control" value="@context.settings.smtp.map(_.fromAddress)"/>
+               </div>
+             </div>
+             <div class="form-group">
+-              <label class="control-label col-md-2" for="fromName">FROM name</label>
++              <label class="control-label col-md-2" for="fromName">FROMに記述する名前</label>
+               <div class="col-md-10">
+                 <input type="text" id="fromName" name="smtp.fromName" class="form-control" value="@context.settings.smtp.map(_.fromName)"/>
+               </div>
+             </div>
+             <div class="text-right">
+-              Send test mail to:
++			  テストメールを送信:
+               <input type="text" id="testAddress" size="30"/>
+               <input type="button" id="sendTestMail" value="Send"/>
+             </div>
+@@ -373,10 +373,10 @@
+           <!--====================================================================-->
+           <hr>
+           <label class="strong">
+-            GitLFS <span class="muted normal">(Enter the LFS server url to enable GitLFS support)</span>
++            GitLFS <span class="muted normal">(GitLFSを有効にするためにはLFSサーバのURLを指定する必要があります)</span>
+           </label>
+           <div class="form-group">
+-            <label class="control-label col-md-2" for="smtpHost">LFS server url</label>
++            <label class="control-label col-md-2" for="smtpHost">LFSサーバのURL</label>
+             <div class="col-md-10">
+               <input type="text" id="lfsServerUrl" name="lfs.serverUrl" class="form-control" value="@context.settings.lfs.serverUrl"/>
+               <span id="error-lfs_serverUrl" class="error"></span>
 diff --git a/src/main/twirl/gitbucket/core/admin/user.scala.html b/src/main/twirl/gitbucket/core/admin/user.scala.html
 index 279f953..b698dbf 100644
 --- a/src/main/twirl/gitbucket/core/admin/user.scala.html
@@ -1308,25 +1563,10 @@ index fa0a05d..0adcbad 100644
      });
    } else {
 diff --git a/src/main/twirl/gitbucket/core/helper/diff.scala.html b/src/main/twirl/gitbucket/core/helper/diff.scala.html
-index 5d4a07b..e5cdf74 100644
+index bf16270..1b357cc 100644
 --- a/src/main/twirl/gitbucket/core/helper/diff.scala.html
 +++ b/src/main/twirl/gitbucket/core/helper/diff.scala.html
-@@ -11,11 +11,11 @@
- @if(showIndex){
-   <div class="pull-right" style="margin-bottom: 10px;">
-     <div class="btn-group" data-toggle="buttons">
--      <input type="button" id="btn-unified" class="btn btn-default btn-small active" value="Unified">
--      <input type="button" id="btn-split" class="btn btn-default btn-small" value="Split">
-+      <input type="button" id="btn-unified" class="btn btn-default btn-small active" value="一画面差分">
-+      <input type="button" id="btn-split" class="btn btn-default btn-small" value="左右差分">
-     </div>
-   </div>
--  Showing <a href="javascript:void(0);" id="toggle-file-list">@diffs.size changed @helpers.plural(diffs.size, "file")</a>
-+  <a href="javascript:void(0);" id="toggle-file-list">@diffs.size つの変更された @helpers.plural(diffs.size, "ファイル")</a> を閲覧中
-   <ul id="commit-file-list" style="display: none;">
-   @diffs.zipWithIndex.map { case (diff, i) =>
-     <li class="border">
-@@ -46,9 +46,9 @@
+@@ -52,9 +52,9 @@
          @if(diff.changeType == ChangeType.COPY || diff.changeType == ChangeType.RENAME){
            @if(newCommitId.isDefined){
              <div class="pull-right align-right">
@@ -1339,7 +1579,7 @@ index 5d4a07b..e5cdf74 100644
              </div>
            }
            <span class="diffstat"><i class="octicon octicon-diff-renamed"></i></span>
-@@ -57,9 +57,9 @@
+@@ -63,9 +63,9 @@
          @if(diff.changeType == ChangeType.ADD || diff.changeType == ChangeType.MODIFY){
            @if(newCommitId.isDefined){
              <div class="pull-right align-right">
@@ -1352,7 +1592,7 @@ index 5d4a07b..e5cdf74 100644
              </div>
            }
            <span class="diffstat">
-@@ -74,8 +74,8 @@
+@@ -80,8 +80,8 @@
          @if(diff.changeType == ChangeType.DELETE){
            @if(oldCommitId.isDefined){
              <div class="pull-right align-right">
@@ -1363,7 +1603,7 @@ index 5d4a07b..e5cdf74 100644
              </div>
            }
            <span class="diffstat"><i class="octicon octicon-diff-removed"></i></span>
-@@ -90,9 +90,9 @@
+@@ -96,9 +96,9 @@
        <td style="padding: 0;">
          @if(diff.oldObjectId == diff.newObjectId){
            @if(diff.oldPath != diff.newPath){
@@ -1375,7 +1615,7 @@ index 5d4a07b..e5cdf74 100644
            }
          } else {
            @if(diff.newContent != None || diff.oldContent != None){
-@@ -106,22 +106,22 @@
+@@ -112,22 +112,22 @@
                  <div class="diff-image-frame diff-old"><img src="@helpers.url(repository)/raw/@oldCommitId.get/@diff.oldPath" class="diff-image" onload="onLoadedDiffImages(this)" style="display:none" /></div>
                } else {
                  @if(diff.changeType != ChangeType.ADD){
@@ -1402,7 +1642,7 @@ index 5d4a07b..e5cdf74 100644
                }
              }
            }
-@@ -323,7 +323,7 @@ $(function(){
+@@ -329,7 +329,7 @@ $(function(){
      diffUsingJS('oldText-' + i, 'newText-' + i, diffText.attr('id'), viewType, ignoreWhiteSpace);
      var add = diffText.find("table").attr("add") * 1;
      var del = diffText.find("table").attr("del") * 1;
@@ -1411,7 +1651,7 @@ index 5d4a07b..e5cdf74 100644
      $('span.diffstat[data-diff-id="' + i + '"]')
          .html('<span class="text-diff-added">+' + add + '</span><span class="text-diff-deleted">-' + del + '</span>')
          .append(renderStatBar(add, del).attr('title', (add + del) + " lines changed").tooltip());
-@@ -363,7 +363,7 @@ $(function(){
+@@ -369,7 +369,7 @@ $(function(){
        newline = elements[key]['newline'];
  
        var $v = $('<div class="commit-comment-box reply-comment-box">')
@@ -1421,7 +1661,7 @@ index 5d4a07b..e5cdf74 100644
            .data('newline',  newline)
            .data('oldline',  oldline));
 diff --git a/src/main/twirl/gitbucket/core/helper/forkrepository.scala.html b/src/main/twirl/gitbucket/core/helper/forkrepository.scala.html
-index 4dfed1d..eead6c7 100644
+index 4dfed1d..82ce44a 100644
 --- a/src/main/twirl/gitbucket/core/helper/forkrepository.scala.html
 +++ b/src/main/twirl/gitbucket/core/helper/forkrepository.scala.html
 @@ -1,7 +1,7 @@
@@ -1433,13 +1673,6 @@ index 4dfed1d..eead6c7 100644
  <form action="@helpers.url(repository)/fork" id="fork" method="post">
    <div class="owner-select-grid">
      <div class="owner-select-target js-fork-owner-select-target enabled">@helpers.avatar(context.loginAccount.get.userName, 100)<span class="owner css-truncate" title="@@@context.loginAccount.get.userName">@@@context.loginAccount.get.userName</span></div>
-@@ -15,4 +15,4 @@
-     </div>
-   </div>
-   <input id="account" name="account" type="hidden" />
--</form>
-\ No newline at end of file
-+</form>
 diff --git a/src/main/twirl/gitbucket/core/helper/preview.scala.html b/src/main/twirl/gitbucket/core/helper/preview.scala.html
 index 7bfe683..8f8701f 100644
 --- a/src/main/twirl/gitbucket/core/helper/preview.scala.html
@@ -1464,12 +1697,12 @@ index 7bfe683..8f8701f 100644
    <div class="tab-content">
      <div class="tab-pane active" style="margin-top: 4px;" id="tab@uid">
 diff --git a/src/main/twirl/gitbucket/core/helper/uploadavatar.scala.html b/src/main/twirl/gitbucket/core/helper/uploadavatar.scala.html
-index 961693d..15b5c5e 100644
+index 6632a55..04069ef 100644
 --- a/src/main/twirl/gitbucket/core/helper/uploadavatar.scala.html
 +++ b/src/main/twirl/gitbucket/core/helper/uploadavatar.scala.html
 @@ -3,12 +3,12 @@
    @if(account.nonEmpty && account.get.image.nonEmpty){
-     <img src="@context.path/@account.get.userName/_avatar" style="with: 120px; height: 120px;"/>
+     <img src="@context.path/@account.get.userName/_avatar" style="width: 120px; height: 120px;"/>
    } else {
 -    <div id="clickable">Upload Image</div>
 +    <div id="clickable">画像アップロード</div>
@@ -1482,13 +1715,6 @@ index 961693d..15b5c5e 100644
    </label>
  }
  <input type="hidden" name="fileId" value=""/>
-@@ -54,4 +54,4 @@ div#avatar {
-   width: 120px;
-   height: 120px;
- }
--</style>
-\ No newline at end of file
-+</style>
 diff --git a/src/main/twirl/gitbucket/core/issues/commentform.scala.html b/src/main/twirl/gitbucket/core/issues/commentform.scala.html
 index a022ac1..3ec8fbd 100644
 --- a/src/main/twirl/gitbucket/core/issues/commentform.scala.html
@@ -1506,7 +1732,7 @@ index a022ac1..3ec8fbd 100644
        </div>
      </div>
 diff --git a/src/main/twirl/gitbucket/core/issues/commentlist.scala.html b/src/main/twirl/gitbucket/core/issues/commentlist.scala.html
-index 8406bb0..0e401ef 100644
+index 6f913c9..08165ea 100644
 --- a/src/main/twirl/gitbucket/core/issues/commentlist.scala.html
 +++ b/src/main/twirl/gitbucket/core/issues/commentlist.scala.html
 @@ -10,7 +10,7 @@
@@ -2508,7 +2734,7 @@ index fda2bc5..78ffa05 100644
    }
  </div>
 diff --git a/src/main/twirl/gitbucket/core/pulls/mergeguide.scala.html b/src/main/twirl/gitbucket/core/pulls/mergeguide.scala.html
-index 1eb4c22..383193f 100644
+index 3332c1f..da4f9c3 100644
 --- a/src/main/twirl/gitbucket/core/pulls/mergeguide.scala.html
 +++ b/src/main/twirl/gitbucket/core/pulls/mergeguide.scala.html
 @@ -33,12 +33,12 @@
@@ -2526,8 +2752,8 @@ index 1eb4c22..383193f 100644
 +              リポジトリへの更新権限を持ったユーザーだけがプルリクエストを処理出来ます。
              }
            </div>
-         } else {
-@@ -47,33 +47,33 @@
+           <div>
+@@ -51,33 +51,33 @@
                <div class="pull-right">
                  <form method="POST" action="@helpers.url(originRepository)/pull/@pullreq.issueId/update_branch">
                    <input type="hidden" name="expected_head_oid" value="@pullreq.commitIdFrom">
@@ -2570,7 +2796,7 @@ index 1eb4c22..383193f 100644
                </div>
              }
            }
-@@ -82,21 +82,20 @@
+@@ -86,21 +86,20 @@
        </div>
        @if(status.hasMergePermission){
          <div style="padding:15px; border-top:solid 1px #e5e5e5; background:#fafafa">
@@ -2599,7 +2825,7 @@ index 1eb4c22..383193f 100644
                </p>
              }
              @gitbucket.core.helper.html.copy("repository-url", "repository-url-copy", forkedRepository.httpUrl){
-@@ -110,7 +109,7 @@
+@@ -114,7 +113,7 @@
              }
              <div style="margin-top: 10px;">
                <p>
@@ -2608,7 +2834,7 @@ index 1eb4c22..383193f 100644
                </p>
                @helpers.pre {
                  git checkout -b @{pullreq.requestUserName}-@{pullreq.requestBranch} @{pullreq.branch}
-@@ -119,7 +118,7 @@
+@@ -123,7 +122,7 @@
              </div>
              <div>
                <p>
@@ -2617,17 +2843,6 @@ index 1eb4c22..383193f 100644
                </p>
                @helpers.pre {
                  git checkout @{pullreq.branch}
-@@ -139,8 +138,8 @@
-         <span id="error-message" class="error"></span>
-         <textarea name="message" style="height: 80px; margin-top: 8px; margin-bottom: 8px;" class="form-control">@issue.title</textarea>
-         <div>
--          <input type="button" class="btn btn-default" value="Cancel" id="cancel-merge-pull-request"/>
--          <input type="submit" class="btn btn-success" value="Confirm merge"/>
-+          <input type="button" class="btn btn-default" value="キャンセル" id="cancel-merge-pull-request"/>
-+          <input type="submit" class="btn btn-success" value="マージする"/>
-         </div>
-       </form>
-     </div>
 diff --git a/src/main/twirl/gitbucket/core/pulls/pullreq.scala.html b/src/main/twirl/gitbucket/core/pulls/pullreq.scala.html
 index 604b0d2..4f88734 100644
 --- a/src/main/twirl/gitbucket/core/pulls/pullreq.scala.html
@@ -3470,7 +3685,7 @@ index e1f5e55..66d1694 100644
  });
  </script>
 diff --git a/src/main/twirl/gitbucket/core/wiki/history.scala.html b/src/main/twirl/gitbucket/core/wiki/history.scala.html
-index 731ea02..7fc2d12 100644
+index 731ea02..17dd27e 100644
 --- a/src/main/twirl/gitbucket/core/wiki/history.scala.html
 +++ b/src/main/twirl/gitbucket/core/wiki/history.scala.html
 @@ -8,27 +8,27 @@
@@ -3508,13 +3723,6 @@ index 731ea02..7fc2d12 100644
              </div>
            </th>
          </tr>
-@@ -70,4 +70,4 @@
-     });
-     </script>
-   }
--}
-\ No newline at end of file
-+}
 diff --git a/src/main/twirl/gitbucket/core/wiki/page.scala.html b/src/main/twirl/gitbucket/core/wiki/page.scala.html
 index 90fc9d1..1cff765 100644
 --- a/src/main/twirl/gitbucket/core/wiki/page.scala.html
